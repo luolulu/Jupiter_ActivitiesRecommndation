@@ -7,7 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-
+//why builder pattern 
 public class Item {
 //整理数据
 	private String itemId;
@@ -53,8 +53,7 @@ public class Item {
 		this.url = builder.url;
 		this.distance = builder.distance;
 	}
-
-	
+//private  封装性好，用builder可以少写construct，
 	public JSONObject toJSONObject() {
 		JSONObject obj = new JSONObject();
 		try {
@@ -71,6 +70,7 @@ public class Item {
 		}
 		return obj;
 	}
+	//why static 不用instance， itembuilder 是为了创建item， innner class 解决顺序问题， 先获得item对象
 	public static class ItemBuilder {
 		private String itemId;
 		public ItemBuilder setItemId(String itemId) {
@@ -105,6 +105,10 @@ public class Item {
 			this.distance = distance;
 			return this;
 		}
+		public Item build() {
+			return new Item(this);
+		}
+
 		private String name;
 		private double rating;
 		private String address;
@@ -113,6 +117,7 @@ public class Item {
 		private String url;
 		private double distance;
 	}
+	
 	public void main(String[] args) {
 		
 	}
