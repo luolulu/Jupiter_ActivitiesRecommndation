@@ -1,12 +1,14 @@
 package db;
 
+import db.mysql.MySQLConnection;
+
 public class DBConnectionFactory {
 	private static final String DEFAULT_DB = "mysql";
 	public static DBConnection getConnection(String db) {
 		switch(db) {
 		case "mysql" : 
-			//return new MySQLConnection();
-			return null;
+			return new MySQLConnection();
+			
 		case "mongdb" :
 			//return new MongDBConnection();
 			return null;

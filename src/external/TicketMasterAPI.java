@@ -49,8 +49,8 @@ public class TicketMasterAPI {
 	//    ...
 	//  }
 	private String getAddress(JSONObject event) throws JSONException {
-		if (!event.isNull("_embeded")) {
-			JSONObject embeded = event.getJSONObject("_embeded");
+		if (!event.isNull("_embedded")) {
+			JSONObject embeded = event.getJSONObject("_embedded");
 			
 			if (!embeded.isNull("venues")) {
 				JSONArray venues = embeded.getJSONArray("venues");
@@ -65,6 +65,7 @@ public class TicketMasterAPI {
 						JSONObject address = venue.getJSONObject("address");
 						if (!address.isNull("line1")) {
 							sb.append(address.getString("line1"));
+							//System.out.println(address.getString("line1"));
 						}
 						if (!address.isNull("line2")) {
 							sb.append(" ");
@@ -83,8 +84,8 @@ public class TicketMasterAPI {
 							sb.append(city.getString("name"));
 						}
 					}
-					if (!sb.toString().equals("")) {
-					return sb.toString();	
+					if (!sb.toString().equals(null)) {
+					    return sb.toString();	
 					}
 				}
 			}
@@ -113,10 +114,10 @@ public class TicketMasterAPI {
 	// {"classifications" : [{"segment": {"name": "music"}}, ...]}
 	private Set<String> getCategories(JSONObject event) throws JSONException {
 		Set<String> categories = new HashSet<>();
-		if (!event.isNull("classfications")) {
-			JSONArray classfications = event.getJSONArray("classfications");
-			for (int i = 0; i < classfications.length(); i++) {
-				JSONObject classfication = classfications.getJSONObject(i);
+		if (!event.isNull("classifications")) {
+			JSONArray classifications = event.getJSONArray("classifications");
+			for (int i = 0; i < classifications.length(); i++) {
+				JSONObject classfication = classifications.getJSONObject(i);
 				if (!classfication.isNull("segment")) {
 					JSONObject segment = classfication.getJSONObject("segment");
 					if (!segment.isNull("name")) {
