@@ -3,6 +3,7 @@ package rpc;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,29 +36,28 @@ public class SearchItem extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		
-		//response.setContentType("application/json");
-		//PrintWriter out = response.getWriter();
-
+		String userId = request.getParameter("user_id");
 		double lat = Double.parseDouble(request.getParameter("lat"));
 		double lon = Double.parseDouble(request.getParameter("lon"));
 		// Term can be empty or null.
-		String term = request.getParameter("term");;
-			
-			//TicketMasterAPI tmAPI = new TicketMasterAPI();
-			DBConnection connection = DBConnectionFactory.getConnection();
-			//List<Item> items = tmAPI.search(lat, lon, keyword);
-			List<Item> items = connection.searchItems(lat, lon, term);
-			connection.close();
-			List<JSONObject> list = new ArrayList<>();
+		String term = request.getParameter("term");
+
+		DBConnection conn = DBConnectionFactory.getConnection();
+		List<Item> items = conn.searchItems(lat, lon, term);
+
+		Set<String> favorite = conn.getFavoriteItemIds(userId);
+		List<JSONObject> list = new ArrayList<>();
 		try {
 			for (Item item : items) {
+				// Add a thin version of restaurant object
 				JSONObject obj = item.toJSONObject();
+				// Check if this is a favorite one.
+				// This field is required by frontend to correctly display favorite items.
+				obj.put("favorite", favorite.contains(item.getItemId()));
+
 				list.add(obj);
 			}
-		} catch (Exception e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		JSONArray array = new JSONArray(list);
